@@ -1,1 +1,1 @@
-web: python -c "from app import download_model_from_gdrive; download_model_from_gdrive()" && uvicorn app:app --host 0.0.0.0 --port $PORT
+web: uvicorn app:app --host 0.0.0.0 --port $PORT

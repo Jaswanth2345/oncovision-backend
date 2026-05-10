@@ -23,20 +23,26 @@ def download_model_from_gdrive():
     
     # If model already exists locally, don't download
     if os.path.exists(model_path):
-        print(f"✓ Model found at {model_path}")
+        file_size = os.path.getsize(model_path)
+        print(f"✓ Model found at {model_path} ({file_size / 1024 / 1024:.1f}MB)")
         return model_path
     
-    # Google Drive file ID (replace with your FILE_ID)
+    # Google Drive file ID
     file_id = "1V4vXdbXjco_Q6m4HGSemijZW8FoJRsdR"
-    download_url = f"https://drive.google.com/uc?export=download&id={file_id}"
     
-    print("⬇️  Downloading model from Google Drive...")
+    print(f"⬇️  Downloading model from Google Drive (File ID: {file_id})...")
     try:
-        urllib.request.urlretrieve(download_url, model_path)
-        print(f"✓ Model downloaded successfully to {model_path}")
+        import gdown
+        url = f"https://drive.google.com/uc?id={file_id}"
+        gdown.download(url, model_path, quiet=False)
+        
+        file_size = os.path.getsize(model_path)
+        print(f"✓ Model downloaded successfully: {file_size / 1024 / 1024:.1f}MB")
         return model_path
     except Exception as e:
         print(f"❌ Failed to download model: {e}")
+        if os.path.exists(model_path):
+            os.remove(model_path)
         raise
 
 MODEL_PATH = os.getenv("MODEL_PATH", download_model_from_gdrive())
